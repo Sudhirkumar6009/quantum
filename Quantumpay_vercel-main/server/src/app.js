@@ -74,7 +74,11 @@ const corsOptions = {
         '13.228.225.19',
         '18.142.128.26',
         '54.254.162.138',
-        'https://quantumpay-onrender.onrender.com'
+        'https://quantumpay-onrender.onrender.com',
+        'https://quantum-nrg8.vercel.app', // Server URL
+        'https://quantum-1lzp4zsjj-sudhirkumar6009s-projects.vercel.app', // Client preview URL
+        /https:\/\/quantum-.*\.vercel\.app$/, // All Vercel preview deployments
+        /https:\/\/.*-sudhirkumar6009s-projects\.vercel\.app$/ // All project preview URLs
     ],
     credentials: true,
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
@@ -176,8 +180,14 @@ app.get("*", (req, res) => {
 // ----------------------------------
 //          START SERVER
 // ----------------------------------
-app.listen(port, () => {
-    console.log(`✅ QuantumPay Server running on http://localhost:${port}/`);
-    console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`);
-    console.log(`   Database: ${process.env.MONGO_URI ? 'Connected' : 'Not configured'}`);
-});
+// Only start server if not in Vercel serverless environment
+if (process.env.VERCEL !== '1' && require.main === module) {
+    app.listen(port, () => {
+        console.log(`✅ QuantumPay Server running on http://localhost:${port}/`);
+        console.log(`   Environment: ${process.env.NODE_ENV || 'development'}`);
+        console.log(`   Database: ${process.env.MONGO_URI ? 'Connected' : 'Not configured'}`);
+    });
+}
+
+// Export for Vercel serverless
+module.exports = app;
